@@ -41,6 +41,10 @@ type Participant {
   imageUrl: String
 }
 
+/*type Tracks extends Map<String, Track> {
+  write() =
+}*/
+
 type Queuegroup {
   created: Number,
   leader: String,
@@ -60,6 +64,10 @@ path /users/{$userId} is User {
 path /participants/{$userId} is Participant {
   read() = true;
   write() = isUser($userId);
+}
+
+path /queuegroups/{$id}/tracks {
+  write() =
 }
 
 path /queuegroups/{$id} is Queuegroup;
