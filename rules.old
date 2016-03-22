@@ -1,0 +1,32 @@
+{
+    "rules": {
+        "users": {
+            "$uid": {
+                ".read": "auth != null && auth.uid == $uid",
+                ".write": "auth != null && auth.uid == $uid",
+                "display_name": {".read":"auth != null"},
+                "ext_url": {".read":"auth != null"},
+                "image_url": {".read":"auth != null"}
+            }
+        },
+        "queuegroups": {
+          //".write": "auth != null && (data.val() != null ? auth.uid == data.child('leader').val() : true)",
+            "$group": {
+                ".read": "auth != null",
+                ".write": "auth != null && (data.val() != null ? auth.uid == data.child('leader').val() : true)",
+                "participants": {
+                  ".read": "auth != null",
+                  ".write": "auth != null"
+                },
+                "tracks": {
+                  ".read": "auth != null",
+                  ".write": "auth != null"
+                }
+            }
+        },
+        "messages": {
+            ".read": "auth != null",
+            ".write": "auth != null"
+        }
+    }
+}

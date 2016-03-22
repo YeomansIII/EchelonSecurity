@@ -1,0 +1,65 @@
+isUser(uid) = auth != null && auth.uid == uid;
+
+type Device {
+  name: String,
+  gcmId: String,
+  type: 'ios' | 'android' | 'web'
+}
+
+type User {
+  country: String,
+  cur_group: String,
+  display_name: String | null,
+  ext_url: String,
+  email: String,
+  id: String,
+  image_url:String,
+  online: Boolean,
+  product: String,
+  type: String,
+  uri: String
+}
+
+type Track {
+  added: Number,
+  album: String,
+  albumArtSmall: String,
+  artist: String,
+  key: String,
+  lengthMs: Number,
+  nowPlaying: Boolean,
+  songId: String,
+  title: String,
+  uri: String
+}
+
+type Participant {
+  active: Boolean,
+  displayName: String,
+  spotifyId: String,
+  extUrl: String,
+  imageUrl: String
+}
+
+type Queuegroup {
+  created: Number,
+  leader: String,
+  name: String,
+  security: null | 'invite' | 'password',
+  participants: Map<String, Boolean>,
+  invites: Map<String, Boolean>,
+  tracks: Map<String, Track>,
+  pastTracks: Map<String, Track>
+}
+
+path /users/{$userId} is User {
+  read() = isUser($userId);
+  write() = isUser($userId);
+}
+
+path /participants/{$userId} is Participant {
+  read() = true;
+  write() = isUser($userId);
+}
+
+path /queuegroups/{$id} is Queuegroup;
