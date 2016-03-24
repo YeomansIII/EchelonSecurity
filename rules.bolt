@@ -1,15 +1,16 @@
-isUser(uid) = auth != null && auth.uid == uid;
+isUser(uid) { auth != null && auth.uid == uid; }
 
 type Device {
+  validate() { this.type == 'ios' || 'android' || 'web' }
   name: String,
   gcmId: String,
-  type: 'ios' | 'android' | 'web'
+  type: String
 }
 
 type User {
   country: String,
   cur_group: String,
-  display_name: String | null,
+  display_name: String | Null,
   ext_url: String,
   email: String,
   id: String,
@@ -27,7 +28,7 @@ type Track {
   artist: String,
   key: String,
   lengthMs: Number,
-  nowPlaying: Boolean,
+  nowPlaying: Boolean | Null,
   songId: String,
   title: String,
   uri: String
@@ -41,16 +42,18 @@ type Participant {
   imageUrl: String
 }
 
-/*type Tracks extends Map<String, Track> {
-  write() =
-}*/
+type Security {
+  validate() { this.type == 'invite' || 'password' }
+  type: String,
+  password: String | Null
+}
 
 type Queuegroup {
   created: Number,
   leader: String,
   name: String,
-  security: null | 'invite' | 'password',
-  participants: Map<String, Boolean>,
+  security: Security | Null,
+  participants: Map<String, Boolean|String>,
   invites: Map<String, Boolean>,
   tracks: Map<String, Track>,
   pastTracks: Map<String, Track>
@@ -62,12 +65,22 @@ path /users/{$userId} is User {
 }
 
 path /participants/{$userId} is Participant {
-  read() = true;
-  write() = isUser($userId);
+  read() { true }
+  write() { isUser($userId) }
 }
 
 path /queuegroups/{$id}/tracks {
-  write() =
+  write() { prior(root.queuegroups[$id].participants[auth.uid]) != null }
+  read() { root.queuegroups[$id].participants[auth.uid] != null }
+}
+
+path /queuegroups/{$id}/participants/{$key1} {
+  write() { key()==auth.uid &&
+            (prior(root.queuegroups[$id].security) == null ?
+              true : (prior(root.queuegroups[$id].security.type) == 'invite' ?
+                prior(root.queuegroups[$id].invites[key()]) != null : (prior(root.queuegroups[$id].security.type) == 'password' ?
+                  this == prior(root.queuegroups[$id].security.password) : false)))}
+  read() { key()==auth.uid || auth.uid==prior(root.queuegroups[$id].leader) }
 }
 
 path /queuegroups/{$id} is Queuegroup;
