@@ -1,7 +1,7 @@
 isUser(uid) { auth != null && auth.uid == uid; }
 
 type Device {
-  validate() { this.type == 'ios' || 'android' || 'web' }
+  validate() { this.type == 'ios' || this.type == 'android' || this.type == 'web' }
   name: String,
   gcmId: String,
   type: String
@@ -10,6 +10,7 @@ type Device {
 type User {
   country: String,
   cur_group: String,
+  cur_group_visible: Boolean,
   display_name: String | Null,
   ext_url: String,
   email: String,
@@ -43,7 +44,7 @@ type Participant {
 }
 
 type Security {
-  validate() { this.type == 'invite' || 'password' }
+  validate() { this.type == 'invite' || this.type == 'password' }
   type: String,
   password: String | Null
 }
@@ -60,13 +61,36 @@ type Queuegroup {
 }
 
 path /users/{$userId} is User {
-  read() = isUser($userId);
-  write() = isUser($userId);
+  read() { isUser($userId) }
+  write() { isUser($userId) }
 }
 
-path /participants/{$userId} is Participant {
-  read() { true }
-  write() { isUser($userId) }
+path /users/{$userId}/cur_group {
+  read() { auth != null && this.parent().cur_group_visible }
+}
+
+path /users/{$userId}/display_name {
+  read() { auth != null }
+}
+
+path /users/{$userId}/ext_url {
+  read() { auth != null }
+}
+
+path /users/{$userId}/id {
+  read() { auth != null }
+}
+
+path /users/{$userId}/image_url {
+  read() { auth != null }
+}
+
+path /users/{$userId}/online {
+  read() { auth != null }
+}
+
+path /users/{$userId}/uri {
+  read() { auth != null }
 }
 
 path /queuegroups/{$id}/tracks {
