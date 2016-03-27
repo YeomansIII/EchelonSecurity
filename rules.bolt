@@ -1,8 +1,27 @@
-isUser(uid) { auth != null && auth.uid == uid; }
+isUser(uid) { auth != null && auth.uid == uid }
+doesNotYetExist() { prior(this) == null }
+
+type CurrentTimestamp extends Number {
+  validate() { this == now }
+}
+
+type Progress extends Number {
+  validate() { this >= 0 && this <= 100 }
+}
+
+type StateTimestamp extends Number {
+  validate() { this == now || prior(this) == this }
+}
+
+type WholeNumber extends Number {
+  validate() { this >= 0 }
+}
 
 type Device {
-  validate() { this.type == 'ios' || this.type == 'android' || this.type == 'web' }
+  validate() { this.gcmId == key() && (this.type == 'ios' || this.type == 'android' || this.type == 'web') }
   name: String,
+  added: CurrentTimestamp,
+  lastActive: CurrentTimestamp,
   gcmId: String,
   type: String
 }
@@ -19,11 +38,13 @@ type User {
   online: Boolean,
   product: String,
   type: String,
-  uri: String
+  uri: String,
+  devices: Map<String, Device>,
+  friends: Map<String, Boolean>
 }
 
 type Track {
-  added: Number,
+  added: CurrentTimestamp,
   album: String,
   albumArtSmall: String,
   artist: String,
@@ -35,13 +56,13 @@ type Track {
   uri: String
 }
 
-type Participant {
+/*type Participant {
   active: Boolean,
   displayName: String,
   spotifyId: String,
   extUrl: String,
   imageUrl: String
-}
+}*/
 
 type Security {
   validate() { this.type == 'invite' || this.type == 'password' }
@@ -50,14 +71,51 @@ type Security {
 }
 
 type Queuegroup {
-  created: Number,
+  validate() { this.name == key() }
+  created: CurrentTimestamp,
   leader: String,
   name: String,
   security: Security | Null,
   participants: Map<String, Boolean|String>,
-  invites: Map<String, Boolean>,
-  tracks: Map<String, Track>,
-  pastTracks: Map<String, Track>
+  invites: Map<String, Boolean> | Null,
+  tracks: Map<String, Track> | Null,
+  pastTracks: Map<String, Track> | Null
+}
+
+type ErrorDetails {
+  error: String,
+  error_stack: String,
+  previous_state: String,
+  original_task: Any,
+  attempts: WholeNumber
+}
+
+type QueueInvite {
+  _state: String,
+  _state_changed: StateTimestamp,
+  _owner: String,
+  _progress: Progress,
+  _error_details: ErrorDetails,
+  _id: String,
+  groupName: String,
+  inviter: String,
+  invitee: String
+}
+
+type QueueSpec {
+  start_state: String | Null,
+  in_progress_state: String,
+  finished_state: String | Null,
+  error_state: String | Null,
+  timeout: WholeNumber | Null
+}
+
+path /queue/invites/{$queueInvite} is QueueInvite {
+  index() {["_state"]}
+  read() { auth.canProcessTasks == true }
+  create() { auth != null || auth.canProcessTasks == true}
+  update() { auth.canProcessTasks == true }
+  delete() { auth.canProcessTasks == true }
 }
 
 path /users/{$userId} is User {
@@ -93,12 +151,35 @@ path /users/{$userId}/uri {
   read() { auth != null }
 }
 
-path /queuegroups/{$id}/tracks {
-  write() { prior(root.queuegroups[$id].participants[auth.uid]) != null }
+path /queuegroups/{$id} is Queuegroup {
+  create() { true }
+  update() { auth.uid==prior(root.queuegroups[$id].leader) }
+  delete() { auth.uid==prior(root.queuegroups[$id].leader) }
   read() { root.queuegroups[$id].participants[auth.uid] != null }
 }
 
-path /queuegroups/{$id}/participants/{$key1} {
+path /queuegroups/{$id}/leader {
+  write() { auth.uid==prior(root.queuegroups[$id].leader) }
+}
+
+path /queuegroups/{$id}/name {
+  write() { auth.uid==prior(root.queuegroups[$id].leader) }
+}
+
+path /queuegroups/{$id}/tracks {
+  write() { prior(root.queuegroups[$id].participants[auth.uid]) != null }
+}
+
+path /queuegroups/{$id}/invites {
+  write() { prior(root.queuegroups[$id].participants[auth.uid]) != null }
+  read() { auth != null }
+}
+
+path /queuegroups/{$id}/pastTracks {
+  write() { auth.uid==prior(root.queuegroups[$id].leader) }
+}
+
+path /queuegroups/{$id}/participants/{$key3} {
   write() { key()==auth.uid &&
             (prior(root.queuegroups[$id].security) == null ?
               true : (prior(root.queuegroups[$id].security.type) == 'invite' ?
@@ -106,5 +187,3 @@ path /queuegroups/{$id}/participants/{$key1} {
                   this == prior(root.queuegroups[$id].security.password) : false)))}
   read() { key()==auth.uid || auth.uid==prior(root.queuegroups[$id].leader) }
 }
-
-path /queuegroups/{$id} is Queuegroup;
