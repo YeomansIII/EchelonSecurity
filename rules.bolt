@@ -10,7 +10,7 @@ type Progress extends Number {
 }
 
 type StateTimestamp extends Number {
-  validate() { this == now || prior(this) == this }
+  validate() { prior(this).parent() == null ? this == now : prior(this) == this }
 }
 
 type WholeNumber extends Number {
@@ -20,25 +20,18 @@ type WholeNumber extends Number {
 type Device {
   validate() { this.gcmId == key() && (this.type == 'ios' || this.type == 'android' || this.type == 'web') }
   name: String,
-  added: CurrentTimestamp,
+  added: StateTimestamp,
   lastActive: CurrentTimestamp,
   gcmId: String,
   type: String
 }
 
 type User {
-  country: String,
   cur_group: String,
   cur_group_visible: Boolean,
-  display_name: String | Null,
-  ext_url: String,
   email: String,
-  id: String,
-  image_url:String,
-  online: Boolean,
   product: String,
   type: String,
-  uri: String,
   devices: Map<String, Device>,
   friends: Map<String, Boolean>
 }
@@ -56,13 +49,15 @@ type Track {
   uri: String
 }
 
-/*type Participant {
-  active: Boolean,
-  displayName: String,
-  spotifyId: String,
-  extUrl: String,
-  imageUrl: String
-}*/
+type Participant {
+  country: String,
+  online: Boolean,
+  display_name: String | Null,
+  id: String,
+  ext_url: String,
+  uri: String,
+  image_url: String
+}
 
 type Security {
   validate() { this.type == 'invite' || this.type == 'password' }
@@ -118,6 +113,11 @@ path /queue/invites/{$queueInvite} is QueueInvite {
   delete() { auth.canProcessTasks == true }
 }
 
+path /participants/{$userId} is Participant {
+  read() { auth != null }
+  write() { isUser($userId) }
+}
+
 path /users/{$userId} is User {
   read() { isUser($userId) }
   write() { isUser($userId) }
@@ -127,28 +127,8 @@ path /users/{$userId}/cur_group {
   read() { auth != null && this.parent().cur_group_visible }
 }
 
-path /users/{$userId}/display_name {
-  read() { auth != null }
-}
-
-path /users/{$userId}/ext_url {
-  read() { auth != null }
-}
-
-path /users/{$userId}/id {
-  read() { auth != null }
-}
-
-path /users/{$userId}/image_url {
-  read() { auth != null }
-}
-
-path /users/{$userId}/online {
-  read() { auth != null }
-}
-
-path /users/{$userId}/uri {
-  read() { auth != null }
+path /users/{$userId}/devices {
+  read() { auth.canProcessTasks == true }
 }
 
 path /queuegroups/{$id} is Queuegroup {
@@ -180,10 +160,11 @@ path /queuegroups/{$id}/pastTracks {
 }
 
 path /queuegroups/{$id}/participants/{$key3} {
-  write() { key()==auth.uid &&
+  create() { key()==auth.uid &&
             (prior(root.queuegroups[$id].security) == null ?
               true : (prior(root.queuegroups[$id].security.type) == 'invite' ?
                 prior(root.queuegroups[$id].invites[key()]) != null : (prior(root.queuegroups[$id].security.type) == 'password' ?
                   this == prior(root.queuegroups[$id].security.password) : false)))}
-  read() { key()==auth.uid || auth.uid==prior(root.queuegroups[$id].leader) }
+  update() { key()==auth.uid || auth.uid==prior(root.queuegroups[$id].leader) }
+  delete() { key()==auth.uid || auth.uid==prior(root.queuegroups[$id].leader) }
 }
