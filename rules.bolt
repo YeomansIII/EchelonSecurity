@@ -27,8 +27,8 @@ type Device {
 }
 
 type User {
-  cur_group: String,
-  cur_group_visible: Boolean,
+  cur_group: String | Null,
+  cur_group_visible: Boolean | Null,
   email: String,
   product: String,
   type: String,
@@ -39,7 +39,9 @@ type User {
 type Track {
   added: CurrentTimestamp,
   album: String,
-  albumArtSmall: String,
+  albumArtSmall: String | Null,
+  albumArtMedium: String | Null,
+  albumArtLarge: String | Null,
   artist: String,
   key: String,
   lengthMs: Number,
@@ -51,7 +53,7 @@ type Track {
 
 type Participant {
   country: String,
-  online: Boolean,
+  online: Boolean | Null,
   display_name: String | Null,
   id: String,
   ext_url: String,
@@ -72,9 +74,9 @@ type Queuegroup {
   name: String,
   security: Security | Null,
   participants: Map<String, Boolean|String>,
-  invites: Map<String, Boolean> | Null,
-  tracks: Map<String, Track> | Null,
-  pastTracks: Map<String, Track> | Null
+  invites: Map<String, Boolean>,
+  tracks: Map<String, Track>,
+  pastTracks: Map<String, Track>
 }
 
 type ErrorDetails {
@@ -132,7 +134,7 @@ path /users/{$userId}/devices {
 }
 
 path /queuegroups/{$id} is Queuegroup {
-  create() { true }
+  create() { auth != null }
   update() { auth.uid==prior(root.queuegroups[$id].leader) }
   delete() { auth.uid==prior(root.queuegroups[$id].leader) }
   read() { root.queuegroups[$id].participants[auth.uid] != null }
@@ -144,6 +146,7 @@ path /queuegroups/{$id}/leader {
 
 path /queuegroups/{$id}/name {
   write() { auth.uid==prior(root.queuegroups[$id].leader) }
+  read() { auth != null }
 }
 
 path /queuegroups/{$id}/tracks {
