@@ -1,5 +1,4 @@
 isUser(uid) { auth != null && auth.uid == uid }
-doesNotYetExist() { prior(this) == null }
 
 type CurrentTimestamp extends Number {
   validate() { this == now }
@@ -72,11 +71,13 @@ type Queuegroup {
   created: CurrentTimestamp,
   leader: String,
   name: String,
+  public: Boolean | Null,
   security: Security | Null,
   participants: Map<String, Boolean|String>,
   invites: Map<String, Boolean>,
   tracks: Map<String, Track>,
-  pastTracks: Map<String, Track>
+  pastTracks: Map<String, Track>,
+  nowPlaying: Track | Null
 }
 
 type ErrorDetails {
@@ -158,6 +159,11 @@ path /queuegroups/{$id}/invites {
   read() { auth != null }
 }
 
+path /queuegroups/{$id}/nowPlaying {
+  write() { auth.uid==prior(root.queuegroups[$id].leader) }
+  read() { this.parent().public == true || prior(root.queuegroups[$id].participants[auth.uid]) != null }
+}
+
 path /queuegroups/{$id}/pastTracks {
   write() { auth.uid==prior(root.queuegroups[$id].leader) }
 }
@@ -170,4 +176,5 @@ path /queuegroups/{$id}/participants/{$key3} {
                   this == prior(root.queuegroups[$id].security.password) : false)))}
   update() { key()==auth.uid || auth.uid==prior(root.queuegroups[$id].leader) }
   delete() { key()==auth.uid || auth.uid==prior(root.queuegroups[$id].leader) }
+  read() { this.parent().public == true || prior(root.queuegroups[$id].participants[auth.uid]) != null }
 }
