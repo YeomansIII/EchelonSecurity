@@ -36,7 +36,7 @@ type User {
 }
 
 type Track {
-  added: CurrentTimestamp,
+  added: Number,
   album: String,
   albumArtSmall: String | Null,
   albumArtMedium: String | Null,
@@ -44,7 +44,6 @@ type Track {
   artist: String,
   key: String,
   lengthMs: Number,
-  nowPlaying: Boolean | Null,
   songId: String,
   title: String,
   uri: String
@@ -160,7 +159,7 @@ path /queuegroups/{$id}/invites {
 }
 
 path /queuegroups/{$id}/nowPlaying {
-  write() { auth.uid==prior(root.queuegroups[$id].leader) }
+  write() { true }
   read() { this.parent().public == true || prior(root.queuegroups[$id].participants[auth.uid]) != null }
 }
 
