@@ -223,6 +223,16 @@
             "uri": {
               ".validate": "newData.isString()"
             },
+            "votedUp": {
+              "$key2": {
+                ".validate": "newData.isBoolean()"
+              }
+            },
+            "votedDown": {
+              "$key2": {
+                ".validate": "newData.isBoolean()"
+              }
+            },
             "$other": {
               ".validate": "false"
             }
@@ -265,6 +275,16 @@
             "uri": {
               ".validate": "newData.isString()"
             },
+            "votedUp": {
+              "$key2": {
+                ".validate": "newData.isBoolean()"
+              }
+            },
+            "votedDown": {
+              "$key2": {
+                ".validate": "newData.isBoolean()"
+              }
+            },
             "$other": {
               ".validate": "false"
             }
@@ -305,6 +325,16 @@
           },
           "uri": {
             ".validate": "newData.isString()"
+          },
+          "votedUp": {
+            "$key2": {
+              ".validate": "newData.isBoolean()"
+            }
+          },
+          "votedDown": {
+            "$key2": {
+              ".validate": "newData.isBoolean()"
+            }
           },
           "$other": {
             ".validate": "false"

@@ -47,6 +47,8 @@ type Track {
   songId: String,
   title: String,
   uri: String
+  votedUp: Map<String, Boolean>,
+  votedDown: Map<String, Boolean>
 }
 
 type Participant {
