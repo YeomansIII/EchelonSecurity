@@ -1,5 +1,11 @@
 isUser(uid) { auth != null && auth.uid == uid }
 
+withInitialCondition(ref, exp) { isNew(ref) && exp }
+
+isNew(ref) { prior(ref) == null }
+
+noChange(ref) { ref == prior(ref) }
+
 type CurrentTimestamp extends Number {
   validate() { this == now }
 }
@@ -10,6 +16,18 @@ type Progress extends Number {
 
 type StateTimestamp extends Number {
   validate() { prior(this).parent() == null ? this == now : prior(this) == this }
+}
+
+type InitialTimestamp extends Number {
+  validate() { noChange(this) || withInitialCondition(this, this == now) }
+}
+
+type PositiveNumber extends Number {
+  validate() { this >= 0 }
+}
+
+type Percent extends Number {
+  validate() { this <= 100 }
 }
 
 type WholeNumber extends Number {
@@ -90,12 +108,12 @@ type ErrorDetails {
 }
 
 type QueueInvite {
-  _state: String,
-  _state_changed: StateTimestamp,
-  _owner: String,
-  _progress: Progress,
-  _error_details: ErrorDetails,
-  _id: String,
+  _state: String | Null,
+  _state_changed: InitialTimestamp | Null,
+  _owner: String | Null,
+  _progress: Percent | Null,
+  _error_details: ErrorDetails | Null,
+  _id: String | Null,
   groupName: String,
   inviter: String,
   invitee: String
@@ -112,9 +130,18 @@ type QueueSpec {
 path /queue/invites/{$queueInvite} is QueueInvite {
   index() {["_state"]}
   read() { auth.canProcessTasks == true }
-  create() { auth != null || auth.canProcessTasks == true}
+  create() { auth != null }
   update() { auth.canProcessTasks == true }
   delete() { auth.canProcessTasks == true }
+}
+
+path /display_names/{$displayName} {
+  read() { auth != null }
+}
+
+path /display_names/{$displayName}/{$friendCode} {
+  read() { auth != null }
+  write() { isUser(this) }
 }
 
 path /participants/{$userId} is Participant {
