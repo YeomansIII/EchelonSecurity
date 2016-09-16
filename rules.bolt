@@ -36,47 +36,48 @@ type WholeNumber extends Number {
 
 type Device {
   validate() { this.gcmId == key() && (this.type == 'ios' || this.type == 'android' || this.type == 'web') }
-  name: String,
-  added: StateTimestamp,
-  lastActive: CurrentTimestamp,
-  gcmId: String,
-  type: String
+  name: String, // a user defined name for the device
+  added: StateTimestamp, // the timestamp that the device was added
+  lastActive: CurrentTimestamp, // the timestamp of the last time the device was active
+  messagingId: String, // the fcm/gcm registration id of the device
+  type: String // the type of the device: ios, android, or web
 }
 
-type User {
-  cur_group: String | Null,
-  cur_group_visible: Boolean | Null,
-  email: String,
-  product: String,
-  type: String,
-  devices: Map<String, Device>,
-  friends: Map<String, Boolean>
+type User { // a user object, key is username
+  cur_group: String | Null, // the name of the current group the user is in
+  cur_group_visible: Boolean | Null, // whether or not other users will be able to see this user's current group
+  email: String, // the user's email address
+  product: String, // the spotify product
+  type: String, // the spotify type
+  devices: Map<String, Device>, // a list of the user's devices
+  friends: Map<String, Boolean> // a list of the user's friends
 }
 
-type Track {
-  added: Number,
-  album: String,
-  albumArtSmall: String | Null,
-  albumArtMedium: String | Null,
-  albumArtLarge: String | Null,
-  artist: String,
-  key: String,
-  lengthMs: Number,
-  songId: String,
-  title: String,
-  uri: String
-  votedUp: Map<String, Boolean>,
-  votedDown: Map<String, Boolean>
+type Track { // a model for a spotify track
+  added: StateTimestamp, // a timestamp of when the track was added to the list
+  album: String, // the name of the track's album
+  albumArtSmall: String | Null, // album art small
+  albumArtMedium: String | Null, // album art medium
+  albumArtLarge: String | Null, // album are large
+  artist: String, // artist string
+  key: String, // the key in this database
+  lengthMs: Number, // the length of the track in milliseconds
+  songId: String, // the spotify song id e.g. 2345afd87ad8
+  title: String, // the title of the track
+  uri: String // the spotify uri of the track, simply a formatted ID e.g. spotify:track:2345afd87ad8
+  votedUp: Map<String, Boolean>, // a map of the users that have voted up
+  votedDown: Map<String, Boolean> // a map of the users that have voted down
 }
 
-type Participant {
-  country: String,
-  online: Boolean | Null,
-  display_name: String | Null,
-  id: String,
-  ext_url: String,
-  uri: String,
-  image_url: String
+type Participant { // a model for a user's public data
+  country: String, // the user's country
+  online: Boolean | Null, // whether the user is currently online
+  display_name: String | Null, // the user's display name
+  friend_code: String | Null, // the user's friend code, this is used so you can still add users when multiple people have the same display name e.e "Jason Yeomans#0001"
+  id: String, // the spotify user id for the user e.g. 4983jj34j8934
+  ext_url: String, // the spotify web url for the user
+  uri: String, // the uri for the user, this is a formatted version of the id e.g. spotify:user:4983jj34j8934
+  image_url: String // the url to the user's spotify profile image
 }
 
 type Security {

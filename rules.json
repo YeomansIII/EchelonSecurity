@@ -81,6 +81,9 @@
         "display_name": {
           ".validate": "newData.isString()"
         },
+        "friend_code": {
+          ".validate": "newData.isString()"
+        },
         "id": {
           ".validate": "newData.isString()"
         },
