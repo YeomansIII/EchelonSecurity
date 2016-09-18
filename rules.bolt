@@ -46,11 +46,11 @@ type Device {
 type User { // a user object, key is username
   cur_group: String | Null, // the name of the current group the user is in
   cur_group_visible: Boolean | Null, // whether or not other users will be able to see this user's current group
-  email: String, // the user's email address
-  product: String, // the spotify product
-  type: String, // the spotify type
-  devices: Map<String, Device>, // a list of the user's devices
-  friends: Map<String, Boolean> // a list of the user's friends
+  email: String | Null, // the user's email address
+  product: String | Null, // the spotify product
+  type: String | Null, // the spotify type
+  devices: Map<String, Device> | Null, // a list of the user's devices
+  friends: Map<String, Boolean> | Null // a list of the user's friends
 }
 
 type Track { // a model for a spotify track
@@ -70,14 +70,14 @@ type Track { // a model for a spotify track
 }
 
 type Participant { // a model for a user's public data
-  country: String, // the user's country
+  country: String | Null, // the user's country
   online: Boolean | Null, // whether the user is currently online
   display_name: String | Null, // the user's display name
   friend_code: String | Null, // the user's friend code, this is used so you can still add users when multiple people have the same display name e.e "Jason Yeomans#0001"
-  id: String, // the spotify user id for the user e.g. 4983jj34j8934
-  ext_url: String, // the spotify web url for the user
-  uri: String, // the uri for the user, this is a formatted version of the id e.g. spotify:user:4983jj34j8934
-  image_url: String // the url to the user's spotify profile image
+  id: String | Null, // the spotify user id for the user e.g. 4983jj34j8934
+  ext_url: String | Null, // the spotify web url for the user
+  uri: String | Null, // the uri for the user, this is a formatted version of the id e.g. spotify:user:4983jj34j8934
+  image_url: String | Null // the url to the user's spotify profile image
 }
 
 type Security {
@@ -142,7 +142,7 @@ path /display_names/{$displayName} {
 
 path /display_names/{$displayName}/{$friendCode} {
   read() { auth != null }
-  write() { isUser(this) }
+  write() { isUser(this) || isUser(prior(this)) }
 }
 
 path /participants/{$userId} is Participant {

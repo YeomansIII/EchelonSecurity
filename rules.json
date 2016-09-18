@@ -65,13 +65,13 @@
         ".read": "auth != null",
         "$friendCode": {
           ".read": "auth != null",
-          ".write": "auth != null && auth.uid == newData.val()"
+          ".write": "auth != null && auth.uid == newData.val() || auth != null && auth.uid == data.val()"
         }
       }
     },
     "participants": {
       "$userId": {
-        ".validate": "newData.hasChildren(['country', 'id', 'ext_url', 'uri', 'image_url'])",
+        ".validate": "newData.hasChildren()",
         "country": {
           ".validate": "newData.isString()"
         },
@@ -105,7 +105,7 @@
     },
     "users": {
       "$userId": {
-        ".validate": "newData.hasChildren(['email', 'product', 'type'])",
+        ".validate": "newData.hasChildren()",
         "cur_group": {
           ".validate": "newData.isString()",
           ".read": "auth != null && data.parent().child('cur_group_visible').val() == true"
@@ -124,7 +124,7 @@
         },
         "devices": {
           "$key1": {
-            ".validate": "newData.hasChildren(['name', 'added', 'lastActive', 'gcmId', 'type']) && newData.child('gcmId').val() == $key1 && (newData.child('type').val() == 'ios' || newData.child('type').val() == 'android' || newData.child('type').val() == 'web')",
+            ".validate": "newData.hasChildren() && newData.hasChildren(['name', 'added', 'lastActive', 'messagingId', 'type']) && newData.child('gcmId').val() == $key1 && (newData.child('type').val() == 'ios' || newData.child('type').val() == 'android' || newData.child('type').val() == 'web')",
             "name": {
               ".validate": "newData.isString()"
             },
@@ -134,7 +134,7 @@
             "lastActive": {
               ".validate": "newData.isNumber() && newData.val() == now"
             },
-            "gcmId": {
+            "messagingId": {
               ".validate": "newData.isString()"
             },
             "type": {
@@ -210,7 +210,7 @@
           "$key4": {
             ".validate": "newData.hasChildren(['added', 'album', 'artist', 'key', 'lengthMs', 'songId', 'title', 'uri'])",
             "added": {
-              ".validate": "newData.isNumber()"
+              ".validate": "newData.isNumber() && (data.parent().val() == null ? newData.val() == now : data.val() == newData.val())"
             },
             "album": {
               ".validate": "newData.isString()"
@@ -265,7 +265,7 @@
           "$key4": {
             ".validate": "newData.hasChildren(['added', 'album', 'artist', 'key', 'lengthMs', 'songId', 'title', 'uri'])",
             "added": {
-              ".validate": "newData.isNumber()"
+              ".validate": "newData.isNumber() && (data.parent().val() == null ? newData.val() == now : data.val() == newData.val())"
             },
             "album": {
               ".validate": "newData.isString()"
@@ -319,7 +319,7 @@
         "nowPlaying": {
           ".validate": "newData.hasChildren() && newData.hasChildren(['added', 'album', 'artist', 'key', 'lengthMs', 'songId', 'title', 'uri'])",
           "added": {
-            ".validate": "newData.isNumber()"
+            ".validate": "newData.isNumber() && (data.parent().val() == null ? newData.val() == now : data.val() == newData.val())"
           },
           "album": {
             ".validate": "newData.isString()"
