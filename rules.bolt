@@ -54,7 +54,7 @@ type User { // a user object, key is username
 }
 
 type Track { // a model for a spotify track
-  added: StateTimestamp, // a timestamp of when the track was added to the list
+  added: Number, // a timestamp of when the track was added to the list
   album: String, // the name of the track's album
   albumArtSmall: String | Null, // album art small
   albumArtMedium: String | Null, // album art medium

@@ -210,7 +210,7 @@
           "$key4": {
             ".validate": "newData.hasChildren(['added', 'album', 'artist', 'key', 'lengthMs', 'songId', 'title', 'uri'])",
             "added": {
-              ".validate": "newData.isNumber() && (data.parent().val() == null ? newData.val() == now : data.val() == newData.val())"
+              ".validate": "newData.isNumber()"
             },
             "album": {
               ".validate": "newData.isString()"
@@ -265,7 +265,7 @@
           "$key4": {
             ".validate": "newData.hasChildren(['added', 'album', 'artist', 'key', 'lengthMs', 'songId', 'title', 'uri'])",
             "added": {
-              ".validate": "newData.isNumber() && (data.parent().val() == null ? newData.val() == now : data.val() == newData.val())"
+              ".validate": "newData.isNumber()"
             },
             "album": {
               ".validate": "newData.isString()"
@@ -319,7 +319,7 @@
         "nowPlaying": {
           ".validate": "newData.hasChildren() && newData.hasChildren(['added', 'album', 'artist', 'key', 'lengthMs', 'songId', 'title', 'uri'])",
           "added": {
-            ".validate": "newData.isNumber() && (data.parent().val() == null ? newData.val() == now : data.val() == newData.val())"
+            ".validate": "newData.isNumber()"
           },
           "album": {
             ".validate": "newData.isString()"
