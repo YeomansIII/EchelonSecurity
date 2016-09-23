@@ -124,15 +124,15 @@
         },
         "devices": {
           "$key1": {
-            ".validate": "newData.hasChildren() && newData.hasChildren(['name', 'added', 'lastActive', 'messagingId', 'type']) && newData.child('gcmId').val() == $key1 && (newData.child('type').val() == 'ios' || newData.child('type').val() == 'android' || newData.child('type').val() == 'web')",
+            ".validate": "newData.hasChildren() && newData.hasChildren(['added', 'lastActive', 'type']) && (newData.child('type').val() == 'ios' || newData.child('type').val() == 'android' || newData.child('type').val() == 'web')",
             "name": {
               ".validate": "newData.isString()"
             },
             "added": {
-              ".validate": "newData.isNumber() && (data.parent().val() == null ? newData.val() == now : data.val() == newData.val())"
+              ".validate": "newData.isNumber()"
             },
             "lastActive": {
-              ".validate": "newData.isNumber() && newData.val() == now"
+              ".validate": "newData.isNumber()"
             },
             "messagingId": {
               ".validate": "newData.isString()"
