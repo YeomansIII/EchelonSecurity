@@ -35,7 +35,7 @@ type WholeNumber extends Number {
 }
 
 type Device {
-  validate() { this.gcmId == key() && (this.type == 'ios' || this.type == 'android' || this.type == 'web') }
+  validate() { (this.type == 'ios' || this.type == 'android' || this.type == 'web') }
   name: String, // a user defined name for the device
   added: StateTimestamp, // the timestamp that the device was added
   lastActive: CurrentTimestamp, // the timestamp of the last time the device was active
@@ -115,9 +115,10 @@ type QueueInvite {
   _progress: Percent | Null,
   _error_details: ErrorDetails | Null,
   _id: String | Null,
-  groupName: String,
+  group_name: String,
   inviter: String,
-  invitee: String
+  invitee: String,
+  inviter_display_name: String
 }
 
 type QueueSpec {
@@ -128,7 +129,7 @@ type QueueSpec {
   timeout: WholeNumber | Null
 }
 
-path /queue/invites/{$queueInvite} is QueueInvite {
+path /queue/invitess/tasks/{$queueInvite} is QueueInvite {
   index() {["_state"]}
   read() { auth.canProcessTasks == true }
   create() { auth != null }

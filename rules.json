@@ -1,62 +1,67 @@
 {
   "rules": {
     "queue": {
-      "invites": {
-        "$queueInvite": {
-          ".validate": "newData.hasChildren(['groupName', 'inviter', 'invitee'])",
-          "_state": {
-            ".validate": "newData.isString()"
-          },
-          "_state_changed": {
-            ".validate": "newData.isNumber() && (newData.val() == data.val() || data.val() == null && newData.val() == now)"
-          },
-          "_owner": {
-            ".validate": "newData.isString()"
-          },
-          "_progress": {
-            ".validate": "newData.isNumber() && newData.val() <= 100"
-          },
-          "_error_details": {
-            ".validate": "newData.hasChildren() && newData.hasChildren(['error', 'error_stack', 'previous_state', 'original_task', 'attempts'])",
-            "error": {
+      "invitess": {
+        "tasks": {
+          "$queueInvite": {
+            ".validate": "newData.hasChildren(['group_name', 'inviter', 'invitee', 'inviter_display_name'])",
+            "_state": {
               ".validate": "newData.isString()"
             },
-            "error_stack": {
+            "_state_changed": {
+              ".validate": "newData.isNumber() && (newData.val() == data.val() || data.val() == null && newData.val() == now)"
+            },
+            "_owner": {
               ".validate": "newData.isString()"
             },
-            "previous_state": {
+            "_progress": {
+              ".validate": "newData.isNumber() && newData.val() <= 100"
+            },
+            "_error_details": {
+              ".validate": "newData.hasChildren() && newData.hasChildren(['error', 'error_stack', 'previous_state', 'original_task', 'attempts'])",
+              "error": {
+                ".validate": "newData.isString()"
+              },
+              "error_stack": {
+                ".validate": "newData.isString()"
+              },
+              "previous_state": {
+                ".validate": "newData.isString()"
+              },
+              "original_task": {
+                ".validate": "true"
+              },
+              "attempts": {
+                ".validate": "newData.isNumber() && newData.val() >= 0"
+              },
+              "$other": {
+                ".validate": "false"
+              }
+            },
+            "_id": {
               ".validate": "newData.isString()"
             },
-            "original_task": {
-              ".validate": "true"
+            "group_name": {
+              ".validate": "newData.isString()"
             },
-            "attempts": {
-              ".validate": "newData.isNumber() && newData.val() >= 0"
+            "inviter": {
+              ".validate": "newData.isString()"
+            },
+            "invitee": {
+              ".validate": "newData.isString()"
+            },
+            "inviter_display_name": {
+              ".validate": "newData.isString()"
             },
             "$other": {
               ".validate": "false"
-            }
-          },
-          "_id": {
-            ".validate": "newData.isString()"
-          },
-          "groupName": {
-            ".validate": "newData.isString()"
-          },
-          "inviter": {
-            ".validate": "newData.isString()"
-          },
-          "invitee": {
-            ".validate": "newData.isString()"
-          },
-          "$other": {
-            ".validate": "false"
-          },
-          ".write": "data.val() == null && auth != null || data.val() != null && newData.val() != null && auth.canProcessTasks == true || data.val() != null && newData.val() == null && auth.canProcessTasks == true",
-          ".read": "auth.canProcessTasks == true",
-          ".indexOn": [
-            "_state"
-          ]
+            },
+            ".write": "data.val() == null && auth != null || data.val() != null && newData.val() != null && auth.canProcessTasks == true || data.val() != null && newData.val() == null && auth.canProcessTasks == true",
+            ".read": "auth.canProcessTasks == true",
+            ".indexOn": [
+              "_state"
+            ]
+          }
         }
       }
     },
@@ -124,7 +129,7 @@
         },
         "devices": {
           "$key1": {
-            ".validate": "newData.hasChildren() && newData.hasChildren(['name', 'added', 'lastActive', 'messagingId', 'type']) && newData.child('gcmId').val() == $key1 && (newData.child('type').val() == 'ios' || newData.child('type').val() == 'android' || newData.child('type').val() == 'web')",
+            ".validate": "newData.hasChildren() && newData.hasChildren(['name', 'added', 'lastActive', 'messagingId', 'type']) && (newData.child('type').val() == 'ios' || newData.child('type').val() == 'android' || newData.child('type').val() == 'web')",
             "name": {
               ".validate": "newData.isString()"
             },
