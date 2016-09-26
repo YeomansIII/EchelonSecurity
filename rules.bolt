@@ -129,7 +129,7 @@ type QueueSpec {
   timeout: WholeNumber | Null
 }
 
-path /queue/invitess/tasks/{$queueInvite} is QueueInvite {
+path /queue/invites/tasks/{$queueInvite} is QueueInvite {
   index() {["_state"]}
   read() { auth.canProcessTasks == true }
   create() { auth != null }
