@@ -36,10 +36,10 @@ type WholeNumber extends Number {
 
 type Device {
   validate() { (this.type == 'ios' || this.type == 'android' || this.type == 'web') }
-  name: String, // a user defined name for the device
-  added: StateTimestamp, // the timestamp that the device was added
-  lastActive: CurrentTimestamp, // the timestamp of the last time the device was active
-  messagingId: String, // the fcm/gcm registration id of the device
+  name: String | Null, // a user defined name for the device
+  added: Number, // the timestamp that the device was added
+  lastActive: Number, // the timestamp of the last time the device was active
+  messagingId: String | Null, // the fcm/gcm registration id of the device
   type: String // the type of the device: ios, android, or web
 }
 
