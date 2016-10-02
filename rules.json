@@ -195,10 +195,97 @@
             ".validate": "false"
           }
         },
+        "defaultPlaylist": {
+          ".validate": "newData.hasChildren() && newData.hasChildren(['external_url', 'followers', 'id', 'name', 'description', 'type', 'uri'])",
+          "external_url": {
+            ".validate": "newData.isString()"
+          },
+          "followers": {
+            ".validate": "newData.isNumber()"
+          },
+          "id": {
+            ".validate": "newData.isString()"
+          },
+          "name": {
+            ".validate": "newData.isString()"
+          },
+          "description": {
+            ".validate": "newData.isString()"
+          },
+          "image": {
+            ".validate": "newData.isString()"
+          },
+          "tracks": {
+            "$key3": {
+              ".validate": "newData.hasChildren() && newData.hasChildren(['added', 'album', 'artist', 'key', 'songId', 'title', 'uri'])",
+              "added": {
+                ".validate": "newData.isNumber()"
+              },
+              "album": {
+                ".validate": "newData.isString()"
+              },
+              "albumArtSmall": {
+                ".validate": "newData.isString()"
+              },
+              "albumArtMedium": {
+                ".validate": "newData.isString()"
+              },
+              "albumArtLarge": {
+                ".validate": "newData.isString()"
+              },
+              "artist": {
+                ".validate": "newData.isString()"
+              },
+              "key": {
+                ".validate": "newData.isString()"
+              },
+              "lengthMs": {
+                ".validate": "newData.isNumber()"
+              },
+              "songId": {
+                ".validate": "newData.isString()"
+              },
+              "title": {
+                ".validate": "newData.isString()"
+              },
+              "uri": {
+                ".validate": "newData.isString()"
+              },
+              "external_url": {
+                ".validate": "newData.isString()"
+              },
+              "votedUp": {
+                "$key2": {
+                  ".validate": "newData.isBoolean()"
+                },
+                ".validate": "newData.hasChildren()"
+              },
+              "votedDown": {
+                "$key2": {
+                  ".validate": "newData.isBoolean()"
+                },
+                ".validate": "newData.hasChildren()"
+              },
+              "$other": {
+                ".validate": "false"
+              }
+            },
+            ".validate": "newData.hasChildren()"
+          },
+          "type": {
+            ".validate": "newData.isString()"
+          },
+          "uri": {
+            ".validate": "newData.isString()"
+          },
+          "$other": {
+            ".validate": "false"
+          }
+        },
         "participants": {
-          "$key3": {
+          "$key4": {
             ".validate": "newData.isBoolean() || newData.isString()",
-            ".write": "data.val() == null && $key3 == auth.uid && (root.child('queuegroups').child($id).child('security').val() == null ? true : root.child('queuegroups').child($id).child('security').child('type').val() == 'invite' ? root.child('queuegroups').child($id).child('invites').child($key3).val() != null : root.child('queuegroups').child($id).child('security').child('type').val() == 'password' ? newData.val() == root.child('queuegroups').child($id).child('security').child('password').val() : false) || data.val() != null && newData.val() != null && ($key3 == auth.uid || auth.uid == root.child('queuegroups').child($id).child('leader').val()) || data.val() != null && newData.val() == null && ($key3 == auth.uid || auth.uid == root.child('queuegroups').child($id).child('leader').val())",
+            ".write": "data.val() == null && $key4 == auth.uid && (root.child('queuegroups').child($id).child('security').val() == null ? true : root.child('queuegroups').child($id).child('security').child('type').val() == 'invite' ? root.child('queuegroups').child($id).child('invites').child($key4).val() != null : root.child('queuegroups').child($id).child('security').child('type').val() == 'password' ? newData.val() == root.child('queuegroups').child($id).child('security').child('password').val() : false) || data.val() != null && newData.val() != null && ($key4 == auth.uid || auth.uid == root.child('queuegroups').child($id).child('leader').val()) || data.val() != null && newData.val() == null && ($key4 == auth.uid || auth.uid == root.child('queuegroups').child($id).child('leader').val())",
             ".read": "data.parent().child('public').val() == true || root.child('queuegroups').child($id).child('participants').child(auth.uid).val() != null"
           },
           ".validate": "newData.hasChildren()"
@@ -212,8 +299,8 @@
           ".write": "root.child('queuegroups').child($id).child('participants').child(auth.uid).val() != null"
         },
         "tracks": {
-          "$key4": {
-            ".validate": "newData.hasChildren(['added', 'album', 'artist', 'key', 'lengthMs', 'songId', 'title', 'uri'])",
+          "$key3": {
+            ".validate": "newData.hasChildren(['added', 'album', 'artist', 'key', 'songId', 'title', 'uri'])",
             "added": {
               ".validate": "newData.isNumber()"
             },
@@ -245,6 +332,9 @@
               ".validate": "newData.isString()"
             },
             "uri": {
+              ".validate": "newData.isString()"
+            },
+            "external_url": {
               ".validate": "newData.isString()"
             },
             "votedUp": {
@@ -267,8 +357,8 @@
           ".write": "root.child('queuegroups').child($id).child('participants').child(auth.uid).val() != null"
         },
         "pastTracks": {
-          "$key4": {
-            ".validate": "newData.hasChildren(['added', 'album', 'artist', 'key', 'lengthMs', 'songId', 'title', 'uri'])",
+          "$key3": {
+            ".validate": "newData.hasChildren(['added', 'album', 'artist', 'key', 'songId', 'title', 'uri'])",
             "added": {
               ".validate": "newData.isNumber()"
             },
@@ -302,6 +392,9 @@
             "uri": {
               ".validate": "newData.isString()"
             },
+            "external_url": {
+              ".validate": "newData.isString()"
+            },
             "votedUp": {
               "$key2": {
                 ".validate": "newData.isBoolean()"
@@ -322,7 +415,7 @@
           ".write": "auth.uid == root.child('queuegroups').child($id).child('leader').val()"
         },
         "nowPlaying": {
-          ".validate": "newData.hasChildren() && newData.hasChildren(['added', 'album', 'artist', 'key', 'lengthMs', 'songId', 'title', 'uri'])",
+          ".validate": "newData.hasChildren() && newData.hasChildren(['added', 'album', 'artist', 'key', 'songId', 'title', 'uri'])",
           "added": {
             ".validate": "newData.isNumber()"
           },
@@ -354,6 +447,9 @@
             ".validate": "newData.isString()"
           },
           "uri": {
+            ".validate": "newData.isString()"
+          },
+          "external_url": {
             ".validate": "newData.isString()"
           },
           "votedUp": {

@@ -61,12 +61,25 @@ type Track { // a model for a spotify track
   albumArtLarge: String | Null, // album are large
   artist: String, // artist string
   key: String, // the key in this database
-  lengthMs: Number, // the length of the track in milliseconds
+  lengthMs: Number | Null, // the length of the track in milliseconds
   songId: String, // the spotify song id e.g. 2345afd87ad8
   title: String, // the title of the track
   uri: String // the spotify uri of the track, simply a formatted ID e.g. spotify:track:2345afd87ad8
-  votedUp: Map<String, Boolean>, // a map of the users that have voted up
-  votedDown: Map<String, Boolean> // a map of the users that have voted down
+  external_url: String | Null,
+  votedUp: Map<String, Boolean> | Null, // a map of the users that have voted up
+  votedDown: Map<String, Boolean> | Null // a map of the users that have voted down
+}
+
+type Playlist {
+  external_url: String,
+  followers: Number,
+  id: String,
+  name: String,
+  description: String,
+  image: String | Null, // image
+  tracks: Map<String, Track> | Null, // list of tracks in the playlist
+  type: String,
+  uri: String
 }
 
 type Participant { // a model for a user's public data
@@ -93,6 +106,7 @@ type Queuegroup {
   name: String,
   public: Boolean | Null,
   security: Security | Null,
+  defaultPlaylist: Playlist | Null,
   participants: Map<String, Boolean|String>,
   invites: Map<String, Boolean>,
   tracks: Map<String, Track>,
@@ -198,7 +212,7 @@ path /queuegroups/{$id}/pastTracks {
   write() { auth.uid==prior(root.queuegroups[$id].leader) }
 }
 
-path /queuegroups/{$id}/participants/{$key3} {
+path /queuegroups/{$id}/participants/{$key4} {
   create() { key()==auth.uid &&
             (prior(root.queuegroups[$id].security) == null ?
               true : (prior(root.queuegroups[$id].security.type) == 'invite' ?
