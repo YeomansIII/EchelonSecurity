@@ -169,7 +169,7 @@
       "$id": {
         ".validate": "newData.hasChildren(['created', 'leader', 'name']) && newData.child('name').val() == $id",
         "created": {
-          ".validate": "newData.isNumber() && newData.val() == now"
+          ".validate": "newData.isNumber()"
         },
         "leader": {
           ".validate": "newData.isString()",
@@ -196,7 +196,7 @@
           }
         },
         "defaultPlaylist": {
-          ".validate": "newData.hasChildren() && newData.hasChildren(['external_url', 'followers', 'id', 'name', 'description', 'type', 'uri'])",
+          ".validate": "newData.hasChildren() && newData.hasChildren(['external_url', 'id', 'name', 'type', 'uri'])",
           "external_url": {
             ".validate": "newData.isString()"
           },
@@ -265,6 +265,9 @@
                   ".validate": "newData.isBoolean()"
                 },
                 ".validate": "newData.hasChildren()"
+              },
+              "fromDefault": {
+                ".validate": "newData.isBoolean()"
               },
               "$other": {
                 ".validate": "false"
@@ -349,6 +352,9 @@
               },
               ".validate": "newData.hasChildren()"
             },
+            "fromDefault": {
+              ".validate": "newData.isBoolean()"
+            },
             "$other": {
               ".validate": "false"
             }
@@ -407,6 +413,9 @@
               },
               ".validate": "newData.hasChildren()"
             },
+            "fromDefault": {
+              ".validate": "newData.isBoolean()"
+            },
             "$other": {
               ".validate": "false"
             }
@@ -463,6 +472,9 @@
               ".validate": "newData.isBoolean()"
             },
             ".validate": "newData.hasChildren()"
+          },
+          "fromDefault": {
+            ".validate": "newData.isBoolean()"
           },
           "$other": {
             ".validate": "false"

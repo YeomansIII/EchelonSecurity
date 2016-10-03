@@ -67,17 +67,18 @@ type Track { // a model for a spotify track
   uri: String // the spotify uri of the track, simply a formatted ID e.g. spotify:track:2345afd87ad8
   external_url: String | Null,
   votedUp: Map<String, Boolean> | Null, // a map of the users that have voted up
-  votedDown: Map<String, Boolean> | Null // a map of the users that have voted down
+  votedDown: Map<String, Boolean> | Null, // a map of the users that have voted down
+  fromDefault: Boolean | Null
 }
 
 type Playlist {
   external_url: String,
-  followers: Number,
+  followers: Number | Null,
   id: String,
   name: String,
-  description: String,
+  description: String | Null,
   image: String | Null, // image
-  tracks: Map<String, Track> | Null, // list of tracks in the playlist
+  tracks: Map<String, Track>, // list of tracks in the playlist
   type: String,
   uri: String
 }
@@ -101,7 +102,7 @@ type Security {
 
 type Queuegroup {
   validate() { this.name == key() }
-  created: CurrentTimestamp,
+  created: Number,
   leader: String,
   name: String,
   public: Boolean | Null,
